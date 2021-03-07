@@ -1,6 +1,7 @@
 import hashids
+from django.conf import settings
 
-hasher = hashids.Hashids()
+hasher = hashids.Hashids(salt=settings.HASHID_SALT)
 
 
 def hash_id(idx: int) -> str:

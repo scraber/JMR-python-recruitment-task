@@ -1,0 +1,9 @@
+build:
+  docker:
+    web: Dockerfile.prod
+run:
+  web: gunicorn shortener.wsgi:application --bind 0.0.0.0:$PORT
+release:
+  image: web
+  command:
+    - ./entrypoint.prod.sh
