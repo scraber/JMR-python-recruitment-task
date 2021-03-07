@@ -28,6 +28,8 @@ DEBUG = int(os.environ.get("DEBUG", default=1))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+HASHID_SALT = os.environ.get("HASHID_SALT")
+
 
 # Application definition
 

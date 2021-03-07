@@ -1,0 +1,9 @@
+{% extends 'url/base.html' %}
+
+{% block content %}
+
+<h1> Your shortened URL is ready!</h1>
+
+<p><input type="text" readonly class="form-control" value="{{ short_url }}" /></p>
+<p>Full URL:<a href="{{ full_url }}">{{ full_url }}</a></p>
+{% endblock %}

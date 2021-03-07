@@ -1,12 +1,18 @@
 {% extends 'url/base.html' %} {% load widget_tweaks %} {% block content %}
-<form role="form" action="{% url 'url:url-cut' %}" method="post">
-  {% csrf_token %}
+<form role="form" action="{% url 'url:url-home' %}" method="post">
+  {% csrf_token %} 
+  
+  {% for error in form.full_url.errors %}
+  <div class="alert alert-danger" role="alert">{{ error }}</div>
+  {% endfor %} {% for error in form.code.errors %}
+  <div class="alert alert-danger" role="alert">{{ error }}</div>
+  {% endfor %}
 
   <div class="form-group">
     <label for="{{ form.full_url.id_for_label }}"
       >{{ form.full_url.label }}</label
     >
-    <div class="input-group">
+    <div class="input-group{% if form.full_url.errors %} has-error{% endif %}">
       {{ form.full_url|add_class:"form-control input-lg"}}
       <span class="input-group-btn">
         <button class="btn btn-outline-primary" type="submit">Cut!</button>
@@ -16,7 +22,7 @@
 
   <div class="form-group">
     <label for="{{ form.code.id_for_label }}">{{ form.code.label }}</label>
-    <div class="input-group">
+    <div class="input-group{% if form.code.errors %} has-error{% endif %}">
       <span class="input-group-text">{{ absolute_url }}</span>
       {{ form.code|add_class:"form-control"}}
     </div>
