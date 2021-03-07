@@ -6,7 +6,6 @@ migrations/
 
 # Environments
 .env*
-venv-netguru
 
 # Local sqlite
 db.sqlite3

@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
+from django.http import (HttpRequest, HttpResponse,
+                         HttpResponsePermanentRedirect, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
@@ -8,7 +9,21 @@ from .models import Url
 from .tools import hash_id
 
 
-def home(request):
+def home(request: HttpRequest) -> HttpResponse:
+    """
+    Main function, validates input from form.
+    If it's valid:
+    - checks if Url object with given code exists, displays warning if so
+    - if object with given code doesn't exist creates new one
+    - if code was not passed at all, creates new object with hashed ID as code
+
+    Args:
+        request (HttpRequest): Basic HTTP request
+
+    Returns:
+        HttpResponse: If new Url object was created, redirects with to detail view,
+        otherwise returns to main form view
+    """
     if request.method == "POST":
         form = UrlForm(request.POST)
         if form.is_valid():
@@ -42,7 +57,18 @@ def home(request):
     )
 
 
-def detail(request, code):
+def detail(request: HttpRequest, code: str) -> HttpResponse:
+    """
+    This function looks up for Url object with given code
+    and redirects to it's detail view
+
+    Args:
+        request (HttpRequest): Basic HTTP request
+        code (str): Shortened URL code
+
+    Returns:
+        HttpResponse: Url object detail view, 404 Not found error otherwise
+    """
     obj = get_object_or_404(Url, code__exact=code)
     return render(
         request,
@@ -54,6 +80,18 @@ def detail(request, code):
     )
 
 
-def redirect(request, code):
+def redirect(request: HttpRequest, code: str) -> HttpResponse:
+    """
+    This function looks up for Url object with given code
+    and redirects to it's full_url if object exists
+
+    Args:
+        request (HttpRequest): Basic HTTP request
+        code (str): Shortened URL code
+
+    Returns:
+        HttpResponse: 301 Redirect to full_url if object was found,
+        404  Not found error otherwise
+    """
     obj = get_object_or_404(Url, code__exact=code)
     return HttpResponsePermanentRedirect(obj.full_url)
