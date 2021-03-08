@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db import IntegrityError
 from django.http import (HttpRequest, HttpResponse,
                          HttpResponsePermanentRedirect, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404, render
@@ -46,7 +47,15 @@ def home(request: HttpRequest) -> HttpResponse:
                 new_url = Url(full_url=url)
                 new_url.save()
                 new_url.code = hash_id(new_url.id)
-            new_url.save()
+
+            # In rare cases where hashed_id is equal to some custom code
+            # Add 'forbidden' form character $ '
+            try:
+                new_url.save()
+            except IntegrityError:
+                new_url.code = f"{new_url.code}$"
+                new_url.save()
+
             return HttpResponseRedirect(reverse("url:url-detail", args=(new_url.code,)))
     else:
         form = UrlForm()
